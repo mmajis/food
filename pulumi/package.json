@@ -1,0 +1,14 @@
+{
+    "name": "food",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^18"
+    },
+    "dependencies": {
+        "@pulumi/aws": "^5.28.0",
+        "@pulumi/aws-native": "^0.48.0",
+        "@pulumi/awsx": "^1.0.1",
+        "@pulumi/command": "^0.7.0",
+        "@pulumi/pulumi": "^3.0.0"
+    }
+}

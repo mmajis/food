@@ -1,0 +1,1 @@
+This rust + pulumi exercise might one day be a meal planner app!
