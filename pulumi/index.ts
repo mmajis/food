@@ -16,11 +16,6 @@ const table = new aws.dynamodb.Table(`food-${stack}`, {
 });
 export const tableName = table.tableName;
 
-
-const api = new aws.apigatewayv2.Api(`food-${stack}`, {
-    protocolType: "HTTP",
-});
-
 const lambdaRole = new awsc.iam.Role("lambdaRole", {
     assumeRolePolicy: {
         Version: "2012-10-17",
@@ -60,9 +55,14 @@ const lambda = new awsc.lambda.Function("lambdaFunction", {
     architectures: ["arm64"],
     role: lambdaRole.arn,
     handler: "bootstrap",
+    environment: {
+        variables: {
+            TABLE_NAME: pulumi.interpolate`${tableName}`,
+        }
+    },
 }, {dependsOn: buildLambda});
 
-const apigw = new awsc.apigatewayv2.Api("httpApiGateway", {
+const apigw = new awsc.apigatewayv2.Api(`food-${stack}`, {
     protocolType: "HTTP",
 });
 
