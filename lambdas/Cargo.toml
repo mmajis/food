@@ -1,0 +1,2 @@
+[workspace]
+members = ["common", "add-meal", "get-meal-by-id"]
