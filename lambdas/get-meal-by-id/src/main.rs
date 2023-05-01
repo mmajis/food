@@ -10,18 +10,6 @@ use lambda_http::{
 use tracing::info;
 
 async fn get_meal(state: &AppState, event: Request) -> Result<Response<Body>, Error> {
-    println!("{:#?}", event);
-
-    info!("{:#?}", event);
-
-    info!(
-        "{:#?}",
-        event
-            .query_string_parameters_ref()
-            .expect("no qstring params")
-    );
-
-    info!("{:#?}", event);
     info!("{:#?}", event);
     let params = event.path_parameters();
     info!("{:#?}", params);

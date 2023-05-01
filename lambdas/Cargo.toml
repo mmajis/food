@@ -1,2 +1,14 @@
 [workspace]
-members = ["common", "add-meal", "get-meal-by-id"]
+members = ["common", "add-meal", "get-meal-by-id", "search-meal", "add-meal-to-day"]
+
+[workspace.dependencies]
+lambda_http = { version = "0.8.0", default-features = false, features = ["apigw_http"] }
+lambda_runtime = "0.8.0"
+tokio = { version = "1", features = ["macros"] }
+tracing = { version = "0.1", features = ["log"] }
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt"] }
+aws-config = "0.55.1"
+aws-sdk-dynamodb = "0.26.0"
+aws-types = "0.55.1"
+serde_dynamo = { version = "4.2.1", features = ["aws-sdk-dynamodb+0_26"] }
+serde = "1.0.160"

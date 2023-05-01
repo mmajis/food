@@ -1,5 +1,6 @@
 use std::env;
 
+use serde::{Deserialize, Serialize};
 use tracing::info;
 
 pub async fn meal_init() -> AppState {
@@ -23,6 +24,11 @@ pub async fn meal_init() -> AppState {
 pub struct AppState {
     pub dynamo_client: aws_sdk_dynamodb::Client,
     pub table_name: String,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct ErrorResponse {
+    pub message: String,
 }
 
 pub fn make_key(id: &str) -> String {

@@ -6,9 +6,13 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tracing = { version = "0.1", features = ["log"] }
-tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt"] }
-aws-config = "0.55.1"
-aws-sdk-dynamodb = "0.26.0"
-aws-types = "0.55.1"
-serde_dynamo = { version = "4.2.1", features = ["aws-sdk-dynamodb+0_26"] }
+lambda_http = { workspace = true }
+lambda_runtime = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+aws-config = { workspace = true }
+aws-sdk-dynamodb = { workspace = true }
+aws-types = { workspace = true }
+serde_dynamo = { workspace = true }
+serde = { workspace = true }

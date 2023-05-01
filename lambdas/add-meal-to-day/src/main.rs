@@ -7,7 +7,6 @@ use lambda_http::{
     run, service_fn, Body, Error, Request, Response,
 };
 use tracing::info;
-use uuid::Uuid;
 
 pub async fn store_meal(state: &AppState, event: Request) -> Result<Response<Body>, Error> {
     println!("{:#?}", event);

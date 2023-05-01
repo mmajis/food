@@ -1,5 +1,5 @@
 [package]
-name = "get-meal-by-id"
+name = "add-meal-to-day"
 version = "0.1.0"
 edition = "2021"
 

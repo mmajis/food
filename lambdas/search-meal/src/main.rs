@@ -1,36 +1,64 @@
-use lambda_http::{run, service_fn, Body, Error, Request, RequestExt, Response};
+use common::{
+    aws_sdk_dynamodb::types::AttributeValue,
+    common::{meal_init, AppState, ErrorResponse},
+    serde_dynamo::aws_sdk_dynamodb_0_26::from_items,
+};
+use lambda_http::{
+    aws_lambda_events::serde_json::{to_string, Value},
+    run, service_fn, Body, Error, Request, RequestExt, Response,
+};
+use tracing::info;
 
-/// This is the main body for the function.
-/// Write your code inside it.
-/// There are some code example in the following URLs:
-/// - https://github.com/awslabs/aws-lambda-rust-runtime/tree/main/examples
-async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
-    // Extract some useful information from the request
-    let who = event
-        .query_string_parameters_ref()
-        .and_then(|params| params.first("name"))
-        .unwrap_or("world");
-    let message = format!("Hello {who}, this is an AWS Lambda HTTP request");
+async fn search_meal(state: &AppState, event: Request) -> Result<Response<Body>, Error> {
+    info!("{:#?}", event);
 
-    // Return something that implements IntoResponse.
-    // It will be serialized to the right response event automatically by the runtime
-    let resp = Response::builder()
-        .status(200)
-        .header("content-type", "text/html")
-        .body(message.into())
-        .map_err(Box::new)?;
-    Ok(resp)
+    let params = event.query_string_parameters();
+    info!("{:#?}", params);
+    let q = params.first("q");
+    if let Some(query) = q {
+        let request = state
+            .dynamo_client
+            .scan()
+            .table_name(&state.table_name)
+            .set_filter_expression(Some("contains(#name, :value)".to_string()))
+            .expression_attribute_names("#name", "name")
+            .expression_attribute_values(":value", AttributeValue::S(query.to_string()));
+
+        let response = request.send().await.expect("DynamoDB operation failed");
+
+        info!("{:#?}", response);
+
+        let items = response.items().unwrap();
+        let values: Vec<Value> = from_items(items.to_owned()).unwrap();
+        let value_arr = Value::Array(values);
+
+        let resp = Response::builder()
+            .status(200)
+            .header("content-type", "application/json")
+            .body(value_arr.to_string().into())
+            .map_err(Box::new)?;
+        Ok(resp)
+    } else {
+        let resp = Response::builder()
+            .status(400)
+            .header("content-type", "application/json")
+            .body(
+                to_string(&ErrorResponse {
+                    message: String::from("Query parameter 'q' is required"),
+                })
+                .unwrap()
+                .into(),
+            )
+            .map_err(Box::new)?;
+        Ok(resp)
+    }
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::INFO)
-        // disable printing the name of the module in every log line.
-        .with_target(false)
-        // disabling time is handy because CloudWatch will add the ingestion time.
-        .without_time()
-        .init();
-
-    run(service_fn(function_handler)).await
+    let app_state = meal_init().await;
+    run(service_fn(|event: Request| search_meal(&app_state, event)))
+        .await
+        .expect("faili");
+    Ok(())
 }
