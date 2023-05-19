@@ -14,7 +14,8 @@ pub async fn store_meal(state: &AppState, event: Request) -> Result<Response<Bod
     let mut payload: Value =
         from_str(std::str::from_utf8(event.body()).expect("Non utf-8 event")).expect("not json");
     let key = get_key(&payload);
-    payload["id"] = json!(key);
+
+    payload["id"] = json!(key[5..]);
 
     info!("{:#?}", payload);
 
@@ -30,6 +31,8 @@ pub async fn store_meal(state: &AppState, event: Request) -> Result<Response<Bod
                 payload
                     .get("name")
                     .expect("Attribute \"name\" is missing")
+                    .as_str()
+                    .unwrap()
                     .to_string(),
             ),
         )

@@ -22,6 +22,7 @@ dependencies = [
  "common",
  "lambda_http",
  "lambda_runtime",
+ "serde",
  "tokio",
  "tracing",
  "tracing-subscriber",

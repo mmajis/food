@@ -4,8 +4,8 @@ use common::{
     serde_dynamo::aws_sdk_dynamodb_0_26::from_item,
 };
 use lambda_http::{
-    aws_lambda_events::serde_json::Value, run, service_fn, Body, Error, Request, RequestExt,
-    Response,
+    aws_lambda_events::serde_json::{json, Value},
+    run, service_fn, Body, Error, Request, RequestExt, Response,
 };
 use tracing::info;
 
@@ -30,7 +30,7 @@ async fn get_meal(state: &AppState, event: Request) -> Result<Response<Body>, Er
     let resp = Response::builder()
         .status(200)
         .header("content-type", "application/json")
-        .body(jaha.to_string().into())
+        .body(jaha["json"].as_str().unwrap().into())
         .map_err(Box::new)?;
     Ok(resp)
 }

@@ -4,7 +4,7 @@ use common::{
     serde_dynamo::aws_sdk_dynamodb_0_26::from_items,
 };
 use lambda_http::{
-    aws_lambda_events::serde_json::{to_string, Value},
+    aws_lambda_events::serde_json::{from_str, to_string, Value},
     run, service_fn, Body, Error, Request, RequestExt, Response,
 };
 use tracing::info;
@@ -30,7 +30,14 @@ async fn search_meal(state: &AppState, event: Request) -> Result<Response<Body>,
 
         let items = response.items().unwrap();
         let values: Vec<Value> = from_items(items.to_owned()).unwrap();
-        let value_arr = Value::Array(values);
+        let values_mapped: Vec<Value> = values
+            .into_iter()
+            .map(|x| from_str(x["json"].as_str().unwrap()).unwrap())
+            .collect();
+
+        info!("{:#?}", values_mapped);
+
+        let value_arr = Value::Array(values_mapped);
 
         let resp = Response::builder()
             .status(200)
