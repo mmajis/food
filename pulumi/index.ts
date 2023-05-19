@@ -39,12 +39,7 @@ const lambdaRoleAttachment = new awsc.iam.RolePolicyAttachment("lambdaRoleAttach
     policyArn: awsc.iam.ManagedPolicy.AWSLambdaBasicExecutionRole,
 });
 
-const lambdaDirs = fs.readdirSync('../lambdas', {withFileTypes: true})
-    .filter(item => item.isDirectory() && item.name !== 'target')
-    .map(item => item.name);
-const dirs = lambdaDirs.map(dir => `../lambdas/${dir}/*`).join(' ');
-const execSyncShaCommand = `shasum ${dirs} | shasum`;
-console.log(execSyncShaCommand);
+const execSyncShaCommand = `find ../lambdas -type f ! -path "*target*" -print0 | xargs -0 shasum | shasum`;
 
 const buildLambda = new local.Command("buildlambda", {
     create: `./build.sh 2>&1`,
@@ -102,6 +97,7 @@ function foodLambda(name: string, routeKey: string) {
 }
 
 const lambdaAddMeal = foodLambda("add-meal", "POST /meal");
+const lambdaAddMealToDay = foodLambda("add-meal-to-day", "PATCH /day/{day}");
 const lambdaGetMealById = foodLambda("get-meal-by-id", "GET /meal/{meal_id}");
 const lambdaSearchMeal = foodLambda("search-meal", "GET /meal");
 
