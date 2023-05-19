@@ -1,0 +1,39 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/day/2023-05-10",
+  "rawQueryString": "parameter1=value1&parameter1=value2&parameter2=value",
+  "cookies": [
+  ],
+  "headers": {
+    "Content-Type": "application/json",
+    "header2": "value1,value2"
+  },
+  "queryStringParameters": {
+    "parameter1": "value1,value2",
+    "parameter2": "value"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "apiId": "urlid",
+    "authentication": null,
+    "domainName": "url-id.lambda-url.us-west-2.on.aws",
+    "domainPrefix": "url-id",
+    "http": {
+      "method": "POST",
+      "path": "/day/2023-05-10",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "123.123.123.123",
+      "userAgent": "agent"
+    },
+    "requestId": "id",
+    "routeKey": "$default",
+    "stage": "$default",
+    "time": "12/Mar/2020:19:03:58 +0000",
+    "timeEpoch": 1583348638390
+  },
+  "body": "{\"name\": \"saboodana\", \"a\": \"b\", \"id\": \"a0b6bfc8-d17a-4eaa-8e86-50d05de9e2d9\"}",
+  "pathParameters": {"day": "2023-05-10"},
+  "isBase64Encoded": false,
+  "stageVariables": null
+}
